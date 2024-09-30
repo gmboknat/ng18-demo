@@ -61,16 +61,10 @@ export const ContactsStore = signalStore(
       patchState(store, { loading: true })
       return contactsService.update(id, contact).pipe(
         tapResponse({
-          next: (res) => {
+          next: (res: Contact) => {
             const contacts = [...store.contacts()]
-            let item = contacts.find(c => c.id === contact.id)
-            if (item) {
-              item = { ...item, 
-                name: item.name,
-                phone: item.phone,
-                email: item.email
-              }
-            }
+            const index = contacts.findIndex(c => c.id === id)
+            contacts[index] = res;
             patchState(store, { contacts, loading: false })
           },
           error: (err) => {
